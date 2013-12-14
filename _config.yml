@@ -3,11 +3,11 @@
 # ----------------------- #
 
 url: http://blog.xpaomian.com
-title: It is my paomian
+title: {paomian} P & L & W
 subtitle: W&L
 author: paomian
 simple_search: http://google.com/search
-description:
+description: A Place To Remember Something
 
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
 # You can customize the format as defined in
