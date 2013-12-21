@@ -1,0 +1,12 @@
+---
+layout: post
+title: "出发"
+date: 2013-12-21 19:30
+comments: true
+categories: 
+---
+
+#出发
+
+明天出发，虽然都不会啊。。。。还是学学，玩玩，总得写点什么
+	
