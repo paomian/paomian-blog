@@ -59,3 +59,18 @@ user=> (-> (hickory-zip (as-hickory (parse "<a href=foo>bar<br></a>")))
 user=> (hickory-to-html *1)
 "<html><head id=\"a\"></head><body><a href=\"foo\">bar<br></a></body></html>"
 ```
+
+- 虽然转换效果不是很好，但是基本够用
+
+```html
+<div class="jumbotron">
+  <h1>Jumbotron heading</h1>
+  <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+  <p><a class="btn btn-lg btn-success" href="#" role="button">Sign up today</a></p>
+</div>
+```
+
+转化后的代码
+```clojure
+[:html {} [:head {}] [:body {} [:div {:class "jumbotron"} "\n\t" [:h1 {} "Jumbotron heading"] "\n\t" [:p {:class "lead"} "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus."] "\n\t" [:p {} [:a {:class "btn btn-lg btn-success", :href "#", :role "button"} "Sign up today"]] "\n"] "\n"]]
+```
