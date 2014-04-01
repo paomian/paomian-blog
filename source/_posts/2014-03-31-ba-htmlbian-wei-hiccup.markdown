@@ -31,33 +31,23 @@ categories:
 以下是粘贴自hickory的github主页 
 
 ```clojure
-user=> (use 'hickory.zip)
+user=> (use 'hickory.core)
 nil
-user=> (require '[clojure.zip :as zip])
-nil
-user=> (-> (hiccup-zip (as-hiccup (parse "<a href=foo>bar<br></a>"))) zip/node)
-([:html {} [:head {}] [:body {} [:a {:href "foo"} "bar" [:br {}]]]])
-user=> (-> (hiccup-zip (as-hiccup (parse "<a href=foo>bar<br></a>"))) zip/next zip/node)
-[:html {} [:head {}] [:body {} [:a {:href "foo"} "bar" [:br {}]]]]
-user=> (-> (hiccup-zip (as-hiccup (parse "<a href=foo>bar<br></a>"))) zip/next zip/next zip/node)
-[:head {}]
-user=> (-> (hiccup-zip (as-hiccup (parse "<a href=foo>bar<br></a>"))) 
-           zip/next zip/next 
-           (zip/replace [:head {:id "a"}]) 
-           zip/node)
-[:head {:id "a"}]
-user=> (-> (hiccup-zip (as-hiccup (parse "<a href=foo>bar<br></a>"))) 
-           zip/next zip/next 
-           (zip/replace [:head {:id "a"}]) 
-           zip/root)
-([:html {} [:head {:id "a"}] [:body {} [:a {:href "foo"} "bar" [:br {}]]]])
-user=> (-> (hickory-zip (as-hickory (parse "<a href=foo>bar<br></a>"))) 
-           zip/next zip/next 
-           (zip/replace {:type :element :tag :head :attrs {:id "a"} :content nil}) 
-           zip/root)
-{:type :document, :content [{:type :element, :attrs nil, :tag :html, :content [{:content nil, :type :element, :attrs {:id "a"}, :tag :head} {:type :element, :attrs nil, :tag :body, :content [{:type :element, :attrs {:href "foo"}, :tag :a, :content ["bar" {:type :element, :attrs nil, :tag :br, :content nil}]}]}]}]}
-user=> (hickory-to-html *1)
-"<html><head id=\"a\"></head><body><a href=\"foo\">bar<br></a></body></html>"
+user=> (def parsed-doc (parse "<a href=\"foo\">foo</a>"))
+#'user/parsed-doc
+user=> (as-hiccup parsed-doc)
+([:html {} [:head {}] [:body {} [:a {:href "foo"} "foo"]]])
+user=> (as-hickory parsed-doc)
+{:type :document, :content [{:type :element, :attrs nil, :tag :html, :content [{:type :element, :attrs nil, :tag :head, :content nil} {:type :element, :attrs nil, :tag :body, :content [{:type :element, :attrs {:href "foo"}, :tag :a, :content ["foo"]}]}]}]}
+user=> (def parsed-frag (parse-fragment "<a href=\"foo\">foo</a> <a href=\"bar\">bar</a>"))
+#'user/parsed-frag
+user=> (as-hiccup parsed-frag)
+IllegalArgumentException No implementation of method: :as-hiccup of protocol: #'hickory.core/HiccupRepresentable found for class: clojure.lang.PersistentVector  clojure.core/-cache-protocol-fn (core_deftype.clj:495)
+
+user=> (map as-hiccup parsed-frag)
+([:a {:href "foo"} "foo"] " " [:a {:href "bar"} "bar"])
+user=> (map as-hickory parsed-frag)
+({:type :element, :attrs {:href "foo"}, :tag :a, :content ["foo"]} " " {:type :element, :attrs {:href "bar"}, :tag :a, :content ["bar"]})
 ```
 
 - 虽然转换效果不是很好，但是基本够用
