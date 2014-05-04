@@ -5,8 +5,7 @@ date: 2014-04-09 10:33
 comments: true
 categories: 
 ---
-要搬走了，呆了算两年了
-![1](http://ww3.sinaimg.cn/large/70c7a1fajw1ef94up15spj21kw16o17z.jpg)
+![要搬走了，呆了算两年了](http://ww3.sinaimg.cn/large/70c7a1fajw1ef94up15spj21kw16o17z.jpg)
 
 ![2](http://ww3.sinaimg.cn/mw1024/70c7a1fajw1ef94qu5t50j21kw16on85.jpg)
 
