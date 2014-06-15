@@ -1,0 +1,42 @@
+---
+layout: post
+title: "玩玩"
+date: 2014-06-15 16:20
+comments: true
+categories: 
+---
+
+###链表结构
+- 链表数据结构的定义很简单(节选自`[include/linux/list.h]`,以下所有代码,除非加以说明,其余均取 自该文件):
+
+```c
+	struct list_head {
+		struct list_head *next, *prev;
+	};
+```
+
+- list_head 结构包含两个指向 list_head 结构的指针 prev 和 next,由此可见,内核的链表具备双链表功 能,实际上,通常它都组织成双循环链表。不过它和传统教科书上介绍的双链表结构模型不同,这里的 list_head 没有数据域。在 Linux 内核链表中,不是在链表结构中包含数据,而是在数据结构中包含链表节 点。也就是说,开发者预计某种数据结构将要组成链表时,它的成员中必含一个 struct list_head 成员。
+
+###由链表节点到数据项变量
+
+- 我们知道,Linux 链表中仅保存了数据项结构中 list_head 成员变量的地址,那么我们如何通过这个 list_head成员访问到它的所有者呢?Linux为此提供了一个list_entry(ptr, type, member)宏,其中ptr是指 向该数据中 list_head 成员的指针,type 是数据项的类型,member 则是数据项类型,例如,有一个由 proto{} 组成的链表,名字叫 proto_list,而每个 proto{}结构中的 list_head{}成员名字叫 node。我们要访问这个链 表中第一个节点,则如此调用:
+
+
+```c
+list_entry(proto_list->next, struct proto, node);
+```
+
+- list_entry 的使用相当简单,相比之下,它的实现则有一些难懂,先告诉大家的是,Linux 内核用的 GCC 编译器使用了一些比较新的关键字,比如 typeof,所以下面的代码是无法在 VC 等编译器上通过:
+
+```c
+#define list_entry(ptr, type, member) container_of(ptr, type, member)
+#define container_of(ptr, type, member) ({ \
+		const typeof( ((type *)0)->member ) *__mptr = (ptr); \
+		(type *)( (char *)__mptr - offsetof(type,member) );})
+#define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
+```
+- 正是利用了 typeof,内核中许多技巧得以实现。,在这里,先求得结构成员在与结构中的偏移量,然 后根据成员变量的地址反过来得出属主结构变量的地址。
+- 要记住的是 container_of()和 offsetof()并不仅用于链表操作,这里最有趣的地方是((type *)0)member,它将 0 地址强制"转换"为 type 结构的指针,再访问到 type 结构中的 member 成员。
+- 对于给定一个结构,offsetof(type,member)是一个常量,list_entry()正是利用这个不变的偏移量来求得 链表数据项的变量地址。
+
+>以上内容摘自linux tcpip 协议栈分析
